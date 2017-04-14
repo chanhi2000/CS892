@@ -15,8 +15,7 @@ import edu.vandy.utils.UiUtils;
  * is gathered and the GazingSimulationActivity is launched to run the
  * simulation.
  */
-public class PalantiriActivity
-        extends LifecycleLoggingActivity {
+public class PalantiriActivity extends LifecycleLoggingActivity {
     /**
      * The edit texts that contain the number of Palantiri, Beings,
      * lease duration, gazing iterations, and type of ISemaphore that
@@ -39,7 +38,7 @@ public class PalantiriActivity
      */ 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Call up to initialize the superclass.
+        // Call up to initialize the superclass.]
         super.onCreate(savedInstanceState);
 
         // Set the default content view.
