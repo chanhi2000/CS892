@@ -13,8 +13,7 @@ import edu.vandy.utils.UiUtils;
  * are identified by their indices in the list they must be associated
  * with an index when created.
  */
-public class BeingRunnable
-       implements Runnable {
+public class BeingRunnable implements Runnable {
     /**
      * Used for Android debugging.
      */
