@@ -100,7 +100,7 @@ public class BeingRunnable implements Runnable {
     private boolean gazeIntoPalantir(int beingId) {
         // Return if PalantiriPresenter instructs us to stop gazing.
         // TODO -- replace "false" with the appropriate call.
-        if (false) {
+        if (!mPresenter.isRunning()) {
             Log.d(TAG,
                   "Thread.interrupted() is true for Being "
                   + beingId
@@ -124,6 +124,11 @@ public class BeingRunnable implements Runnable {
                 // succeeds, using a call to Utils.pauseThread() to
                 // avoid excessive "busy waiting".
                 // TODO -- you fill in here.
+                while (palantir == null)
+                {
+                    UiUtils.pauseThread(500);
+                    palantir = mPresenter.getModel().acquirePalantir();
+                }
 
                 // Make sure we were supposed to get a Palantir.
                 if (!incrementGazingCountAndCheck(beingId, 
@@ -163,6 +168,7 @@ public class BeingRunnable implements Runnable {
                 // Return the Palantir back to PalantiriManager in the
                 // Model layer.
                 // TODO -- you fill in here.
+                mPresenter.getModel().releasePalantir(palantir);
             }
             return true;
         }
@@ -189,6 +195,14 @@ public class BeingRunnable implements Runnable {
     private boolean incrementGazingCountAndCheck(int beingId,
                                                  Palantir palantir) {
         // TODO - You fill in here.
+        int threads = mGazingThreads.incrementAndGet();
+        int numPalantiri = mPresenter.getPalantiriColors().size();
+        if (threads > numPalantiri) {
+            mPresenter.shutdown();
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -198,5 +212,6 @@ public class BeingRunnable implements Runnable {
      */
     private void decrementGazingCount() {
         // TODO - You fill in here.
+        mGazingThreads.decrementAndGet();
     }
 }

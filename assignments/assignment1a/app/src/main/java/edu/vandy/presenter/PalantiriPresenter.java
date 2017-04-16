@@ -224,6 +224,18 @@ public class PalantiriPresenter {
         // Generate beingCount number of threads that are stored in a
         // list and then start all the threads in the List.
         // TODO - You fill in here.
+
+        mBeingThreads = new ArrayList<>();
+        for (int i=0; i < beingCount; i++) {
+            BeingRunnable newBeingThread = new BeingRunnable(this);
+            Thread threadToAdd = new Thread(newBeingThread);
+            mBeingThreads.add(threadToAdd);
+        }
+
+        for (Thread t : mBeingThreads) {
+            t.start();
+        }
+
     }
 
     /**
@@ -235,6 +247,39 @@ public class PalantiriPresenter {
         // Threads to finish and then calls mView.get().done() to
         // inform the View layer that the simulation is done.
         // TODO -- you fill in here.
+
+
+        class WaitThread extends Thread {
+            public void run() {
+                boolean stillRunning = true;
+
+                while(stillRunning)
+                {
+                    stillRunning = false;
+                    for (int i=0; i<mBeingThreads.size(); i++) {
+                        if (mBeingThreads.get(i).isAlive()) {
+                            stillRunning = true;
+                        }
+                    }
+                }
+
+                mView.get().done();
+
+            }
+        }
+
+        WaitThread mWaitThread = new WaitThread();
+        mWaitThread.start();
+
+        new Thread(() -> {
+            for (Thread t : mBeingThreads) {
+                try {
+                    t.join();
+                } catch (InterruptedException e){
+
+                }
+            }
+        });
     }
 
     /**
@@ -246,6 +291,10 @@ public class PalantiriPresenter {
         synchronized(this) {
             // Interrupt all the Threads.
             // TODO -- you fill in here.
+
+            for (Thread t : mBeingThreads) {
+                t.interrupt();
+            }
 
             // Inform the user that we're shutting down the
             // simulation.
